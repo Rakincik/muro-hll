@@ -64,7 +64,7 @@ def main():
         if str(rol).lower() == "öğrenci": role_id = 2
         elif str(rol).lower() == "eğitimci": role_id = 1
 
-        cur.execute("SELECT id FROM \"Users\" WHERE \"PhoneNumber\" = %s OR \"Email\" = %s", (phone, email))
+        cur.execute("SELECT "Id" FROM \"Users\" WHERE \"PhoneNumber\" = %s OR \"Email\" = %s", (phone, email))
         if not cur.fetchone():
             if args.execute:
                 cur.execute(
@@ -82,7 +82,7 @@ def main():
             if not ders or str(ders).strip() == "": continue
 
             course_name = str(ders).strip()
-            cur.execute("SELECT id FROM \"Courses\" WHERE \"Title\" = %s AND \"TenantId\" = %s", (course_name, str(tenant_id)))
+            cur.execute("SELECT "Id" FROM \"Courses\" WHERE \"Title\" = %s AND \"TenantId\" = %s", (course_name, str(tenant_id)))
             if not cur.fetchone():
                 if args.execute:
                     cur.execute(
