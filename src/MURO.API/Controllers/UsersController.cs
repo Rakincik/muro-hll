@@ -241,7 +241,7 @@ public class UsersController : ControllerBase
             var pLast2 = pStr.Length >= 2 ? pStr.Substring(pStr.Length - 2) : "00";
             
             var newPassword = $"{fn}.{pLast2}.{lChar}";
-            u.PasswordHash = BCrypt.Net.BCrypt.HashPassword(newPassword);
+            u.PasswordHash = newPassword;
             count++;
         }
         await dbContext.SaveChangesAsync();
