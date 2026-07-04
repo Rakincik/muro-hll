@@ -1,4 +1,4 @@
-import os
+﻿import os
 import argparse
 import uuid
 import datetime
@@ -58,8 +58,8 @@ def main():
         password_hash = "AQAAAAEAACcQAAAAEFg8b7gB5v5V6v5V6v5V6v5V6v5V6v5V6v5V6v5V6v5V6v5V6v5V6v5V6v5V6w==" # 123456
         
         role_str = "Admin"
-        if str(rol).lower() == "öğrenci": role_str = "Student"
-        elif str(rol).lower() == "eğitimci": role_str = "Teacher"
+        if str(rol).lower() == "Ã¶ÄŸrenci": role_str = "Student"
+        elif str(rol).lower() == "eÄŸitimci": role_str = "Teacher"
 
         cur.execute("SELECT \"Id\" FROM \"Users\" WHERE \"Phone\" = %s OR \"Email\" = %s", (phone, email))
         if not cur.fetchone():
@@ -84,7 +84,7 @@ def main():
                 if args.execute:
                     cur.execute(
                         "INSERT INTO \"Courses\" (\"Id\", \"Title\", \"CourseType\", \"Mode\", \"IsDeleted\", \"CreatedAt\") VALUES (%s, %s, %s, %s, %s, %s)",
-                        (str(uuid.uuid4()), course_name, 0, 0, False, datetime.datetime.now())
+                        (str(uuid.uuid4()), course_name, 0, 0, False, 0, False, datetime.datetime.now())
                     )
                 print(f"Added Course: {course_name}")
 
