@@ -1217,7 +1217,7 @@ export default function GroupsPage() {
             {/* ── Assign Course Modal ── */}
             {assignCourseOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
-                    <div className="bg-white rounded-[2rem] shadow-2xl w-full max-w-2xl flex flex-col overflow-hidden animate-fade-in-up border border-[#E2E8F0]">
+                    <div className="bg-white rounded-[2rem] shadow-2xl w-full max-w-3xl flex flex-col overflow-hidden animate-fade-in-up border border-[#E2E8F0]">
                         <div className="flex items-center justify-between p-6 border-b border-[#E2E8F0]/60 bg-[#E2E8F0]/15">
                             <h2 className="text-xl font-black text-[#0A1931]">Ders Ata</h2>
                             <button onClick={() => { setAssignCourseOpen(false); setAssignCourseSearch(""); }} className="p-2 text-[#A0AEC0] hover:text-[#0A1931] rounded-xl"><X size={20} /></button>
@@ -1244,49 +1244,67 @@ export default function GroupsPage() {
                                 ) : (
                                     <>
                                         {allCourses
-                                            .filter(c => !detail?.courses.some(dc => dc.courseId === c.id))
                                             .filter(c => !assignCourseSearch || c.title.toLocaleLowerCase('tr').includes(assignCourseSearch.toLocaleLowerCase('tr')))
+                                            .sort((a, b) => {
+                                                const aAssigned = detail?.courses.some(dc => dc.courseId === a.id);
+                                                const bAssigned = detail?.courses.some(dc => dc.courseId === b.id);
+                                                if (aAssigned && !bAssigned) return -1;
+                                                if (!aAssigned && bAssigned) return 1;
+                                                return 0;
+                                            })
                                             .map(c => {
                                                 const isOnline = (assignModes[c.id] || "Both") === "Both";
+                                                const isAssigned = detail?.courses.some(dc => dc.courseId === c.id);
+                                                
                                                 return (
-                                                    <div key={c.id} className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 rounded-xl border border-[#E2E8F0]/60 hover:border-indigo-200 hover:bg-indigo-50/30 transition-all">
-                                                        <div className="flex items-center gap-3 min-w-0">
-                                                            <div className="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center shrink-0">
-                                                                <BookOpen size={16} className="text-indigo-600" />
+                                                    <div key={c.id} className={`flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 rounded-xl border transition-all ${isAssigned ? 'bg-emerald-50/40 border-emerald-200/60' : 'border-[#E2E8F0]/60 hover:border-indigo-200 hover:bg-indigo-50/30'}`}>
+                                                        <div className="flex items-center gap-3 min-w-0 flex-1">
+                                                            <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${isAssigned ? 'bg-emerald-100 text-emerald-600' : 'bg-indigo-50 text-indigo-600'}`}>
+                                                                {isAssigned ? <Check size={16} /> : <BookOpen size={16} />}
                                                             </div>
-                                                            <p className="text-sm font-bold text-[#0A1931] truncate">{c.title}</p>
+                                                            <Tooltip content={c.title}>
+                                                                <p className="text-sm font-bold text-[#0A1931] truncate cursor-help">{c.title}</p>
+                                                            </Tooltip>
                                                         </div>
                                                         
                                                         <div className="flex items-center justify-between sm:justify-end gap-3 shrink-0">
-                                                            <div className="flex items-center gap-2 px-2.5 py-1.5 bg-[#F8FAFC] rounded-lg border border-[#E2E8F0]">
-                                                                <span className={`text-[9px] font-black tracking-wider ${!isOnline ? 'text-amber-600' : 'text-gray-400'}`}>OFFLINE</span>
-                                                                <button 
-                                                                    type="button"
-                                                                    onClick={(e) => {
-                                                                        e.stopPropagation();
-                                                                        setAssignModes(prev => ({ ...prev, [c.id]: isOnline ? "Offline" : "Both" }));
-                                                                    }}
-                                                                    className={`relative w-9 h-5 rounded-full transition-colors focus:outline-none ${isOnline ? 'bg-emerald-500' : 'bg-amber-400'}`}
-                                                                >
-                                                                    <div className={`absolute top-1/2 -translate-y-1/2 w-3.5 h-3.5 bg-white rounded-full transition-all shadow-sm ${isOnline ? 'right-0.5' : 'left-0.5'}`} />
-                                                                </button>
-                                                                <span className={`text-[9px] font-black tracking-wider ${isOnline ? 'text-emerald-600' : 'text-gray-400'}`}>ONLINE</span>
-                                                            </div>
-                                                            <button 
-                                                                type="button"
-                                                                onClick={(e) => {
-                                                                    e.stopPropagation();
-                                                                    handleAssignSingleCourse(c.id, isOnline ? "Both" : "Offline");
-                                                                }}
-                                                                className="px-3 py-1.5 bg-[#0A1931] text-white text-xs font-bold rounded-lg hover:bg-emerald-600 transition-colors flex items-center gap-1 shadow-sm shrink-0"
-                                                            >
-                                                                <Plus size={14} /> Ekle
-                                                            </button>
+                                                            {isAssigned ? (
+                                                                <div className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-100/50 text-emerald-700 rounded-lg text-xs font-bold border border-emerald-200/50">
+                                                                    <Check size={14} /> Zaten Ekli
+                                                                </div>
+                                                            ) : (
+                                                                <>
+                                                                    <div className="flex items-center gap-2 px-2.5 py-1.5 bg-[#F8FAFC] rounded-lg border border-[#E2E8F0]">
+                                                                        <span className={`text-[9px] font-black tracking-wider ${!isOnline ? 'text-amber-600' : 'text-gray-400'}`}>OFFLINE</span>
+                                                                        <button 
+                                                                            type="button"
+                                                                            onClick={(e) => {
+                                                                                e.stopPropagation();
+                                                                                setAssignModes(prev => ({ ...prev, [c.id]: isOnline ? "Offline" : "Both" }));
+                                                                            }}
+                                                                            className={`relative w-9 h-5 rounded-full transition-colors focus:outline-none ${isOnline ? 'bg-emerald-500' : 'bg-amber-400'}`}
+                                                                        >
+                                                                            <div className={`absolute top-1/2 -translate-y-1/2 w-3.5 h-3.5 bg-white rounded-full transition-all shadow-sm ${isOnline ? 'right-0.5' : 'left-0.5'}`} />
+                                                                        </button>
+                                                                        <span className={`text-[9px] font-black tracking-wider ${isOnline ? 'text-emerald-600' : 'text-gray-400'}`}>ONLINE</span>
+                                                                    </div>
+                                                                    <button 
+                                                                        type="button"
+                                                                        onClick={(e) => {
+                                                                            e.stopPropagation();
+                                                                            handleAssignSingleCourse(c.id, isOnline ? "Both" : "Offline");
+                                                                        }}
+                                                                        className="px-3 py-1.5 bg-[#0A1931] text-white text-xs font-bold rounded-lg hover:bg-emerald-600 transition-colors flex items-center gap-1 shadow-sm shrink-0"
+                                                                    >
+                                                                        <Plus size={14} /> Ekle
+                                                                    </button>
+                                                                </>
+                                                            )}
                                                         </div>
                                                     </div>
                                                 );
                                         })}
-                                        {allCourses.filter(c => !detail?.courses.some(dc => dc.courseId === c.id)).filter(c => !assignCourseSearch || c.title.toLocaleLowerCase('tr').includes(assignCourseSearch.toLocaleLowerCase('tr'))).length === 0 && (
+                                        {allCourses.filter(c => !assignCourseSearch || c.title.toLocaleLowerCase('tr').includes(assignCourseSearch.toLocaleLowerCase('tr'))).length === 0 && (
                                             <p className="text-center text-sm text-[#A0AEC0] py-4">Aramanıza uygun ders bulunamadı.</p>
                                         )}
                                     </>
