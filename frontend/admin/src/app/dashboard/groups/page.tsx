@@ -1253,8 +1253,12 @@ export default function GroupsPage() {
                                                 return 0;
                                             })
                                             .map(c => {
-                                                const isOnline = (assignModes[c.id] || "Both") === "Both";
-                                                const isAssigned = detail?.courses.some(dc => dc.courseId === c.id);
+                                                const assignedCourse = detail?.courses.find(dc => dc.courseId === c.id);
+                                                const isAssigned = !!assignedCourse;
+                                                const initialMode = assignedCourse?.mode || "Both";
+                                                const currentMode = assignModes[c.id] || initialMode;
+                                                const isOnline = currentMode === "Both";
+                                                const modeChanged = isAssigned && currentMode !== initialMode;
                                                 
                                                 return (
                                                     <div key={c.id} className={`flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 rounded-xl border transition-all ${isAssigned ? 'bg-emerald-50/40 border-emerald-200/60' : 'border-[#E2E8F0]/60 hover:border-indigo-200 hover:bg-indigo-50/30'}`}>
@@ -1268,37 +1272,54 @@ export default function GroupsPage() {
                                                         </div>
                                                         
                                                         <div className="flex items-center justify-between sm:justify-end gap-3 shrink-0">
-                                                            {isAssigned ? (
-                                                                <div className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-100/50 text-emerald-700 rounded-lg text-xs font-bold border border-emerald-200/50">
-                                                                    <Check size={14} /> Zaten Ekli
-                                                                </div>
+                                                            <div className="flex items-center gap-2 px-2.5 py-1.5 bg-[#F8FAFC] rounded-lg border border-[#E2E8F0]">
+                                                                <span className={`text-[9px] font-black tracking-wider ${!isOnline ? 'text-amber-600' : 'text-gray-400'}`}>OFFLINE</span>
+                                                                <button 
+                                                                    type="button"
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation();
+                                                                        setAssignModes(prev => ({ ...prev, [c.id]: isOnline ? "Offline" : "Both" }));
+                                                                    }}
+                                                                    className={`relative w-9 h-5 rounded-full transition-colors focus:outline-none ${isOnline ? 'bg-emerald-500' : 'bg-amber-400'}`}
+                                                                >
+                                                                    <div className={`absolute top-1/2 -translate-y-1/2 w-3.5 h-3.5 bg-white rounded-full transition-all shadow-sm ${isOnline ? 'right-0.5' : 'left-0.5'}`} />
+                                                                </button>
+                                                                <span className={`text-[9px] font-black tracking-wider ${isOnline ? 'text-emerald-600' : 'text-gray-400'}`}>ONLINE</span>
+                                                            </div>
+
+                                                            {!isAssigned ? (
+                                                                <button 
+                                                                    type="button"
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation();
+                                                                        handleAssignSingleCourse(c.id, currentMode);
+                                                                    }}
+                                                                    className="px-3 py-1.5 bg-[#0A1931] text-white text-xs font-bold rounded-lg hover:bg-emerald-600 transition-colors flex items-center gap-1 shadow-sm min-w-[76px] justify-center shrink-0"
+                                                                >
+                                                                    <Plus size={14} /> Ekle
+                                                                </button>
+                                                            ) : modeChanged ? (
+                                                                <button 
+                                                                    type="button"
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation();
+                                                                        handleAssignSingleCourse(c.id, currentMode);
+                                                                    }}
+                                                                    className="px-3 py-1.5 bg-amber-500 text-white text-xs font-bold rounded-lg hover:bg-amber-600 transition-colors flex items-center gap-1 shadow-sm min-w-[76px] justify-center shrink-0"
+                                                                >
+                                                                    <RefreshCw size={14} /> Güncelle
+                                                                </button>
                                                             ) : (
-                                                                <>
-                                                                    <div className="flex items-center gap-2 px-2.5 py-1.5 bg-[#F8FAFC] rounded-lg border border-[#E2E8F0]">
-                                                                        <span className={`text-[9px] font-black tracking-wider ${!isOnline ? 'text-amber-600' : 'text-gray-400'}`}>OFFLINE</span>
-                                                                        <button 
-                                                                            type="button"
-                                                                            onClick={(e) => {
-                                                                                e.stopPropagation();
-                                                                                setAssignModes(prev => ({ ...prev, [c.id]: isOnline ? "Offline" : "Both" }));
-                                                                            }}
-                                                                            className={`relative w-9 h-5 rounded-full transition-colors focus:outline-none ${isOnline ? 'bg-emerald-500' : 'bg-amber-400'}`}
-                                                                        >
-                                                                            <div className={`absolute top-1/2 -translate-y-1/2 w-3.5 h-3.5 bg-white rounded-full transition-all shadow-sm ${isOnline ? 'right-0.5' : 'left-0.5'}`} />
-                                                                        </button>
-                                                                        <span className={`text-[9px] font-black tracking-wider ${isOnline ? 'text-emerald-600' : 'text-gray-400'}`}>ONLINE</span>
-                                                                    </div>
-                                                                    <button 
-                                                                        type="button"
-                                                                        onClick={(e) => {
-                                                                            e.stopPropagation();
-                                                                            handleAssignSingleCourse(c.id, isOnline ? "Both" : "Offline");
-                                                                        }}
-                                                                        className="px-3 py-1.5 bg-[#0A1931] text-white text-xs font-bold rounded-lg hover:bg-emerald-600 transition-colors flex items-center gap-1 shadow-sm shrink-0"
-                                                                    >
-                                                                        <Plus size={14} /> Ekle
-                                                                    </button>
-                                                                </>
+                                                                <button 
+                                                                    type="button"
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation();
+                                                                        handleRemoveCourse(c.id);
+                                                                    }}
+                                                                    className="px-3 py-1.5 bg-white text-red-500 text-xs font-bold rounded-lg border border-red-200 hover:bg-red-50 hover:border-red-300 transition-colors flex items-center gap-1 shadow-sm min-w-[76px] justify-center shrink-0"
+                                                                >
+                                                                    <Trash2 size={14} /> Çıkar
+                                                                </button>
                                                             )}
                                                         </div>
                                                     </div>
