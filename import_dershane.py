@@ -1,4 +1,4 @@
-﻿import os
+import os
 import argparse
 import uuid
 import datetime
@@ -83,7 +83,7 @@ def main():
             if not cur.fetchone():
                 if args.execute:
                     cur.execute(
-                        "INSERT INTO \"Courses\" (\"Id\", \"Title\", \"CourseType\", \"IsDeleted\", \"CreatedAt\") VALUES (%s, %s, %s, %s, %s)",
+                        "INSERT INTO \"Courses\" (\"Id\", \"Title\", \"CourseType\", \"Mode\", \"IsDeleted\", \"CreatedAt\") VALUES (%s, %s, %s, %s, %s, %s)",
                         (str(uuid.uuid4()), course_name, 0, 0, False, datetime.datetime.now())
                     )
                 print(f"Added Course: {course_name}")
