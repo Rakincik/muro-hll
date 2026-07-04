@@ -39,8 +39,6 @@ def main():
     # 1. IMPORT USERS
     print("\n--- IMPORTING USERS ---")
     s1 = wb["Sayfa1"]
-    # Headers are at row 3, data starts at row 4 or 5.
-    # Columns: M(12)=Ad_Soyad, N(13)=Telefon, O(14)=Eposta, P(15)=Rol
     for row in s1.iter_rows(min_row=4, values_only=True):
         if len(row) < 16: continue
         
@@ -85,7 +83,7 @@ def main():
             if not cur.fetchone():
                 if args.execute:
                     cur.execute(
-                        "INSERT INTO \"Courses\" (\"Id\", \"Title\", \"IsDeleted\", \"CreatedAt\") VALUES (%s, %s, %s, %s)",
+                        "INSERT INTO \"Courses\" (\"Id\", \"Title\", \"CourseType\", \"IsDeleted\", \"CreatedAt\") VALUES (%s, %s, %s, %s, %s)",
                         (str(uuid.uuid4()), course_name, 0, False, datetime.datetime.now())
                     )
                 print(f"Added Course: {course_name}")
