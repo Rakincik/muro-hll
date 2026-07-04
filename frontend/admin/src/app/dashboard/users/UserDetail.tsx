@@ -183,7 +183,7 @@ export function UserDetail({ user: u, onBack, onToggleActive, onChangeRole, onDe
                         { icon: ShieldCheck, label: "Kullanıcı Adı", value: u.username || "—", bg: "bg-blue-50 text-blue-600" },
                         { icon: Mail, label: "E-posta", value: u.email || "—", bg: "bg-blue-50 text-blue-600" },
                         { icon: Phone, label: "Telefon", value: u.phone || "—", bg: "bg-emerald-50 text-emerald-600" },
-                        { icon: KeyRound, label: "Şifre", value: u.password || "******** (Gizli)", bg: "bg-amber-50 text-amber-600", action: onQuickReset ? () => onQuickReset(u) : undefined, actionIcon: <KeyRound size={16} />, actionTooltip: "Şifre Sıfırla" },
+                        { icon: KeyRound, label: "Şifre", value: (u.password && u.password.length < 50) ? u.password : "******** (Gizli)", bg: "bg-amber-50 text-amber-600", action: onQuickReset ? () => onQuickReset(u) : undefined, actionIcon: <KeyRound size={16} />, actionTooltip: "Şifre Sıfırla" },
                         { icon: CalendarIcon, label: "Kayıt Tarihi", value: new Date(u.createdAt).toLocaleDateString("tr-TR", { day: "numeric", month: "long", year: "numeric" }), bg: "bg-purple-50 text-purple-600" },
                         { icon: Clock, label: "Son Giriş", value: lastLoginText, bg: "bg-[#F0F4F8] text-[#A0AEC0]", colSpan: 2 },
                     ].map((r, idx) => (
