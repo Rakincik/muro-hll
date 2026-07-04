@@ -84,7 +84,7 @@ def main():
                 if args.execute:
                     cur.execute(
                         "INSERT INTO \"Courses\" (\"Id\", \"Title\", \"CourseType\", \"IsDeleted\", \"CreatedAt\") VALUES (%s, %s, %s, %s, %s)",
-                        (str(uuid.uuid4()), course_name, 0, False, datetime.datetime.now())
+                        (str(uuid.uuid4()), course_name, 0, 0, False, datetime.datetime.now())
                     )
                 print(f"Added Course: {course_name}")
 
