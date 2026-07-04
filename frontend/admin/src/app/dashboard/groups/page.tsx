@@ -1266,9 +1266,7 @@ export default function GroupsPage() {
                                                             <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${isAssigned ? 'bg-emerald-100 text-emerald-600' : 'bg-indigo-50 text-indigo-600'}`}>
                                                                 {isAssigned ? <Check size={16} /> : <BookOpen size={16} />}
                                                             </div>
-                                                            <Tooltip content={c.title}>
-                                                                <p className="text-sm font-bold text-[#0A1931] truncate cursor-help">{c.title}</p>
-                                                            </Tooltip>
+                                                            <p title={c.title} className="text-sm font-bold text-[#0A1931] truncate cursor-help">{c.title}</p>
                                                         </div>
                                                         
                                                         <div className="flex items-center justify-between sm:justify-end gap-3 shrink-0">
