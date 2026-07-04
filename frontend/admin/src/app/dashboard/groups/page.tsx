@@ -1217,7 +1217,7 @@ export default function GroupsPage() {
             {/* ── Assign Course Modal ── */}
             {assignCourseOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
-                    <div className="bg-white rounded-[2rem] shadow-2xl w-full max-w-lg flex flex-col overflow-hidden animate-fade-in-up border border-[#E2E8F0]">
+                    <div className="bg-white rounded-[2rem] shadow-2xl w-full max-w-2xl flex flex-col overflow-hidden animate-fade-in-up border border-[#E2E8F0]">
                         <div className="flex items-center justify-between p-6 border-b border-[#E2E8F0]/60 bg-[#E2E8F0]/15">
                             <h2 className="text-xl font-black text-[#0A1931]">Ders Ata</h2>
                             <button onClick={() => { setAssignCourseOpen(false); setAssignCourseSearch(""); }} className="p-2 text-[#A0AEC0] hover:text-[#0A1931] rounded-xl"><X size={20} /></button>
@@ -1235,7 +1235,7 @@ export default function GroupsPage() {
                             </div>
 
 
-                            <div className="space-y-2 max-h-[300px] overflow-y-auto pr-1">
+                            <div className="space-y-2 max-h-[400px] overflow-y-auto pr-1">
                                 {loadingCourses ? (
                                     <div className="flex flex-col items-center justify-center py-10">
                                         <Loader2 className="w-8 h-8 text-indigo-500 animate-spin mb-3" />
